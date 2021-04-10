@@ -1,0 +1,130 @@
+name: build
+
+on: 
+  push:
+    paths-ignore:
+      - "**.md"
+      - "Makefile"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "Makefile"
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout V
+        uses: actions/checkout@v2
+        with:
+          repository: vlang/v
+
+      - name: Build V
+        run: |
+          make
+          sudo ./v symlink
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          path: nvenv
+
+      - name: Format
+        run: |
+          cd ./nvenv
+          make fmt
+
+      - name: Build Nvenv
+        run: |
+          cd ./nvenv
+          make linux
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: linux
+          path: ./nvenv/bin/nvenv_linux
+          if-no-files-found: error
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout V
+        uses: actions/checkout@v2
+        with:
+          repository: vlang/v
+
+      - name: Build V
+        run: |
+          make
+          sudo ./v symlink
+
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          path: nvenv
+ 
+      - name: Format
+        run: |
+          cd ./nvenv
+          make fmt
+
+      - name: Build Nvenv 
+        run: |
+          cd ./nvenv
+          make macos
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macos
+          path: ./nvenv/bin/nvenv_osx
+          if-no-files-found: error
+
+  release:
+    name: Release to Github
+    if: contains(github.event.head_commit.message, '[Release]') && github.repository == 'NTBBloodbath/nvenv'
+    needs: [linux, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository }}
+          path: 'workspace'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: linux
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: macos
+
+      - name: tar
+        run: |
+          mv nvenv_linux nvenv && tar czf nvenv_linux.tar.gz nvenv && rm nvenv
+          mv nvenv_osx nvenv && tar czf nvenv_osx.tar.gz nvenv && rm nvenv
+          ls -lh
+
+      - name: Setup Release information
+        run: |
+          versionName=`sed '4q;d' ./workspace/v.mod | cut -d ":" -f2 | xargs`
+          export VERSION_NAME=$versionName
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+
+      - name: Extract release notes
+        id: extract-release-notes
+        uses: ffurrer2/extract-release-notes@v1
+        with:
+          changelog_file: ./workspace/CHANGELOG.md
+
+      - name: Create Release
+        uses: Xotl/cool-github-releases@v1
+        with:
+          mode: update
+          isDraft: false
+          isPrerelease: false
+          tag_name: v${{ env.VERSION_NAME }}
+          release_name: v${{ env.VERSION_NAME }}
+          assets: nvenv_linux.tar.gz;nvenv_osx.tar.gz
+          body_mrkdwn: ${{ steps.extract-release-notes.outputs.release_notes }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
