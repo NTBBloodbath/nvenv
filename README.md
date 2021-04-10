@@ -12,28 +12,29 @@
 
 ---
 
-Nvenv is a lightweight (~200kB) and blazing fast (<1s execution time) Neovim
+Nvenv is a lightweight and blazing fast Neovim
 version manager, made using [Vlang](https://github.com/vlang/v).
 
 # Features
 
-- Extremely lightweight
-- Blazing fast execution time
+- Extremely lightweight (~300kB)
+- Blazing fast execution time (<1s execution time)
 - No heavy dependencies
 
 # Install
-
-> **Supported OS:**
->
-> 1. Linux
->
-> 2. MacOS
 
 ## Dependencies
 
 - jq
 - tar
 - curl
+
+
+> **Supported OS:**
+>
+> 1. Linux
+>
+> 2. MacOS
 
 Just download the latest binary from [releases](https://github.com/NTBBloodbath/nvenv/releases)
 and add it to your `$PATH`.
