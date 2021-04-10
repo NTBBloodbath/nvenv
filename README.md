@@ -2,8 +2,9 @@
 
 # Nvenv
 
-![License](https://img.shields.io/github/license/NTBBloodbath/nvenv?style=flat-square)
-![Latest Release](https://img.shields.io/github/v/release/NTBBloodbath/nvenv?include_prereleases&style=flat-square)
+![License](https://img.shields.io/github/license/NTBBloodbath/nvenv?color=3DA639&logo=open-source-initiative&logoColor=3DA639&style=for-the-badge)
+![Latest Release](https://img.shields.io/github/v/release/NTBBloodbath/nvenv?include_prereleases&color=9FEF00&logo=hack-the-box&style=for-the-badge)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/NTBBloodbath/nvenv/build/main?logo=github&style=for-the-badge)
 
 [Features](#features) • [Install](#install) • [Usage](#usage) • [Building](#building) • [Contribute](#contribute)
 
