@@ -1,0 +1,14 @@
+*.exe
+*.o
+*.so
+.*.c
+*.tmp.c
+*.obj
+*.exp
+*.ilk
+*.pdb
+*.dll
+*.lib
+*.bak
+nvenv
+.noprefix.vrepl_temp*
