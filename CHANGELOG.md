@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] - 2021-04-09
 ### Added
-- `warn_msg` function (`[utils.v](./utils/utils.v)`)
-- `check_command` function (`[utils.v](./utils/utils.v)`)
+- `warn_msg` function ([utils.v](./utils/utils.v))
+- `check_command` function ([utils.v](./utils/utils.v))
 
 ### Changed
 - `setup` command now check missing dependencies
