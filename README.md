@@ -23,13 +23,6 @@ version manager, made using [Vlang](https://github.com/vlang/v).
 
 # Install
 
-## Dependencies
-
-- jq
-- tar
-- curl
-
-
 > **Supported OS:**
 >
 > 1. Linux
@@ -38,6 +31,12 @@ version manager, made using [Vlang](https://github.com/vlang/v).
 
 Just download the latest binary from [releases](https://github.com/NTBBloodbath/nvenv/releases)
 and add it to your `$PATH`.
+
+## Dependencies
+
+- jq
+- tar
+- curl
 
 # Usage
 Just run <kbd>nvenv help</kbd> and see the available commands
