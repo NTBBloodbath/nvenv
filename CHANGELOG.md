@@ -6,7 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2017-06-20
+## [1.1.0] - 2021-04-09
+### Added
+- `warn_msg` function (`[utils.v](./utils/utils.v)`)
+- `check_command` function (`[utils.v](./utils/utils.v)`)
+
+### Changed
+- `setup` command now check missing dependencies
+
+### Fixed
+- Fix release date of first release (1.0.0)
+- Update outdated unreleased diff link
+
+## [1.0.0] - 2021-04-09
 ### Added
 - `setup` command
 - `ls` command
@@ -17,5 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `use` command
 - `clean` command
 
-[Unreleased]: https://github.com/NTBBloodbath/nvenv/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/NTBBloodbath/nvenv/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/NTBBloodbath/nvenv/releases/tag/v1.1.0
 [1.0.0]: https://github.com/NTBBloodbath/nvenv/releases/tag/v1.0.0

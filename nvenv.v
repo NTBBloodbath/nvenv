@@ -101,13 +101,20 @@ fn main() {
 }
 
 fn setup(cmd Command) ? {
+	dependencies := ['curl', 'tar', 'jq']
+
 	if !os.exists(utils.nvenv_home) {
+		// Create required directories
 		// /home/user/.cache/nvenv => cache files for nvenv
 		// /home/user/.local/bin => where nvim will be symlinked
 		// /home/user/.local/share/nvenv/versions => core files for nvenv
 		os.mkdir_all(utils.nvenv_cache) ?
 		os.mkdir_all('$os.home_dir()/.local/bin') ?
 		os.mkdir_all(utils.nvenv_versions) ?
+		// Check for missing dependencies
+		for dependency in dependencies {
+			utils.check_command(dependency)
+		}
 	} else {
 		utils.error_msg('Setup is already done.', 1)
 	}

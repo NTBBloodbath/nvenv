@@ -19,10 +19,12 @@ const (
 /*
 Utility functions:
 		- log_msg
+		- warn_msg
 		- error_msg
 		- setup_exists
 		- check_current
 		- check_version
+		- check_command
 		- print_versions
 		- version_path
 		- get_files
@@ -35,6 +37,11 @@ Utility functions:
 // Send a log message with coloring
 pub fn log_msg(message string) {
 	println('[${term.bold(term.bright_green('LOG'))}] $message')
+}
+
+// Send a warning message with coloring
+pub fn warn_msg(message string) {
+	eprintln('[${term.bold(term.bright_yellow('WARN'))}] $message')
 }
 
 // Send an error with coloring and its exit code
@@ -69,6 +76,13 @@ pub fn check_version(version string, info string) {
 	if version == '' {
 		eprintln('[ERR] Please specific the version to $info')
 		exit(1)
+	}
+}
+
+// Check if the given program exists in the system's PATH
+pub fn check_command(command string) {
+	if !os.exists_in_system_path(command) {
+		warn_msg("Need '$command' (command not found)")
 	}
 }
 
