@@ -10,5 +10,5 @@
 *.dll
 *.lib
 *.bak
-nvenv
+bin/nvenv*
 .noprefix.vrepl_temp*
