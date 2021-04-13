@@ -36,17 +36,17 @@ Utility functions:
 
 // Send a log message with coloring
 pub fn log_msg(message string) {
-	println('[${term.bold(term.bright_green('LOG'))}] $message')
+	println('[${term.bold(term.green('LOG'))}] $message')
 }
 
 // Send a warning message with coloring
 pub fn warn_msg(message string) {
-	eprintln('[${term.bold(term.bright_yellow('WARN'))}] $message')
+	eprintln('[${term.bold(term.yellow('WARN'))}] $message')
 }
 
 // Send an error with coloring and its exit code
 pub fn error_msg(message string, exit_code int) {
-	eprintln('[${term.bold(term.bright_red('ERR'))}] $message')
+	eprintln('[${term.bold(term.red('ERR'))}] $message')
 	exit(exit_code)
 }
 
@@ -94,14 +94,14 @@ pub fn print_versions(versions []string, remote bool) {
 		// If listing remote versions, current version exists and version is equal to it
 		if remote && (current_version != '' && version == current_version) {
 			println('$version\t(installed, used)')
-		// If not listing remote versions, current version exists and version is equal to it
+			// If not listing remote versions, current version exists and version is equal to it
 		} else if !remote && (current_version != '' && version == current_version) {
 			println('$version\t(used)')
 		} else if version != '' {
 			// If listing remote versions, and version is installed
 			if remote && os.exists(version_path(version)) {
 				println('$version\t(installed)')
-			// If listing remote or if not listing remote and version is installed
+				// If listing remote or if not listing remote and version is installed
 			} else if remote || (os.exists(version_path(version)) && !remote) {
 				println('$version')
 			}
@@ -123,7 +123,7 @@ pub fn get_files(dir string) []string {
 		return files
 	}
 
-	for file in os.execute('find $nvenv_cache -type f').output.split('\n') {
+	for file in os.execute('find $utils.nvenv_cache -type f').output.split('\n') {
 		if file != '' {
 			files << file
 		}

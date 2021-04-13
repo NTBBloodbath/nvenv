@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-04-13
+### Added
+- `update-nightly` command
+
+### Changed
+- Now internal CLI metadata (name, version, description) are extracted from
+  the `v.mod` file
+- Tweaks to commands descriptions to avoid redundancy
+- Changed some error messages to warn messages
+- Stop using whitespaces on log messages with more than one line, got replaced by tabs
+- Stop using bright colors for logs messages (logs, warns and errors)
+- Makefile now format files on build
+- CI tweaks
+
+### Deprecated
+- `update` command in favor of `update-nightly` command because
+  only nightly version receives updates
+
+### Fixed
+- Typo in `v.mod` file
+- Internal CLI version now matches the current version
+
 ## [1.1.0] - 2021-04-09
 ### Added
 - `warn_msg` function ([utils.v](./utils/utils.v))
@@ -29,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `use` command
 - `clean` command
 
-[Unreleased]: https://github.com/NTBBloodbath/nvenv/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/NTBBloodbath/nvenv/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/NTBBloodbath/nvenv/releases/tag/v1.2.0
 [1.1.0]: https://github.com/NTBBloodbath/nvenv/releases/tag/v1.1.0
 [1.0.0]: https://github.com/NTBBloodbath/nvenv/releases/tag/v1.0.0
