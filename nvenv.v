@@ -1,31 +1,34 @@
 import os
 import utils
+import v.vmod
 import cli { Command, Flag }
 
 fn main() {
+	vm := vmod.decode(@VMOD_FILE) or { panic(err.msg) }
+
 	mut cmd := Command{
-		name: 'nvenv'
-		description: 'Neovim Version Manager'
-		version: '1.0.0'
+		name: '$vm.name'
+		description: '$vm.description'
+		version: '$vm.version'
 		disable_flags: true
 	}
 
 	mut setup_cmd := Command{
 		name: 'setup'
-		description: 'Setup Nvenv, required at first usage.'
+		description: 'Set up required files and directories, required at first usage.'
 		execute: setup
 	}
 
 	mut list_cmd := Command{
 		name: 'ls'
-		description: 'List your installed Neovim versions.'
+		description: 'List your installed versions.'
 		pre_execute: utils.setup_exists
 		execute: list
 	}
 
 	mut list_remote_cmd := Command{
 		name: 'list-remote'
-		description: 'List the available Neovim versions.'
+		description: 'List the available versions.'
 		pre_execute: list_remote_pre
 		execute: list_remote
 	}
@@ -39,7 +42,7 @@ fn main() {
 
 	mut install_cmd := Command{
 		name: 'install'
-		description: 'Install a specific version of Neovim.'
+		description: 'Install a version.'
 		usage: '<version>'
 		required_args: 1
 		pre_execute: utils.setup_exists
@@ -48,7 +51,7 @@ fn main() {
 
 	mut uninstall_cmd := Command{
 		name: 'uninstall'
-		description: 'Uninstall a specific version of Neovim.'
+		description: 'Uninstall a version.'
 		usage: '<version>'
 		required_args: 1
 		pre_execute: utils.setup_exists
@@ -71,16 +74,23 @@ fn main() {
 
 	mut update_cmd := Command{
 		name: 'update'
-		description: 'Update a specific version of Neovim.'
+		description: 'Update a version.'
 		usage: '<version>'
 		required_args: 1
 		pre_execute: utils.setup_exists
 		execute: update
 	}
 
+	mut update_nightly_cmd := Command{
+		name: 'update-nightly'
+		description: 'Update Neovim Nightly version.'
+		pre_execute: utils.setup_exists
+		execute: update_nightly
+	}
+
 	mut use_cmd := Command{
 		name: 'use'
-		description: 'Use a specific version of Neovim.'
+		description: 'Use a specific version.'
 		usage: '<version>'
 		required_args: 1
 		pre_execute: utils.setup_exists
@@ -89,13 +99,13 @@ fn main() {
 
 	mut clean_cmd := Command{
 		name: 'clean'
-		description: "Clean Nvenv's cache files"
+		description: 'Clean Nvenv cache files.'
 		pre_execute: utils.setup_exists
 		execute: clean
 	}
 
 	cmd.add_commands([setup_cmd, list_cmd, list_remote_cmd, install_cmd, uninstall_cmd, update_cmd,
-		use_cmd, clean_cmd])
+		update_nightly_cmd, use_cmd, clean_cmd])
 	cmd.setup()
 	cmd.parse(os.args)
 }
@@ -107,7 +117,7 @@ fn setup(cmd Command) ? {
 		// Create required directories
 		// /home/user/.cache/nvenv => cache files for nvenv
 		// /home/user/.local/bin => where nvim will be symlinked
-		// /home/user/.local/share/nvenv/versions => core files for nvenv
+		// /home/user/.local/share/nvenv => core files for nvenv
 		os.mkdir_all(utils.nvenv_cache) ?
 		os.mkdir_all('$os.home_dir()/.local/bin') ?
 		os.mkdir_all(utils.nvenv_versions) ?
@@ -124,20 +134,17 @@ fn list_remote_pre(_ Command) ? {
 	utils.log_msg('Fetching remote versions ...\n')
 }
 
-// List remote versions of Neovim by pulling them from the repository.
 fn list_remote(cmd Command) ? {
 	versions_to_show := cmd.flags.get_int('versions') ?
 	releases := 'https://api.github.com/repos/neovim/neovim/releases'
 	jq_cmd := 'jq \'[.[] | select(.tag_name!="v0.4.4") | .tag_name] | .[:$versions_to_show] | .[]\''
-	
+
 	remote_versions := os.execute('curl -s $releases | $jq_cmd').output
 	if remote_versions.len == 0 {
 		utils.error_msg('Failed to get Neovim releases.', 3)
 	}
 
-	/*
-	Trim leading `v` and leading `"`
-	*/
+	// Trim leading `v` and leading `"`
 	remote_versions_list := remote_versions.replace('v', '').replace('"', '').split('\n')
 
 	utils.print_versions(remote_versions_list, true)
@@ -183,7 +190,7 @@ fn install(cmd Command) ? {
 		tar_name += 'osx64'
 	}
 
-	os.rmdir('$utils.nvenv_versions/$tar_name') or { }
+	os.rmdir('$utils.nvenv_versions/$tar_name') or {}
 
 	tar_path := '$utils.nvenv_cache/$filename'
 	utils.log_msg('Installing version $version ...')
@@ -194,9 +201,9 @@ fn install(cmd Command) ? {
 	// If there is no current used version then use the new downloaded version as current
 	if !os.exists(utils.nvenv_current) {
 		use(cmd) ?
-		utils.log_msg('Version $version successfully installed.\n      You may need to add $os.home_dir()/.local/bin to your \$PATH.')
+		utils.log_msg('Version $version successfully installed.\n\tYou may need to add $os.home_dir()/.local/bin to your \$PATH.')
 	} else {
-		utils.log_msg('Version $version successfully installed.\n      You can now use it by doing `nvenv use $version`.')
+		utils.log_msg('Version $version successfully installed.\n\tYou can now use it by doing `nvenv use $version`.')
 	}
 }
 
@@ -227,7 +234,7 @@ fn uninstall(cmd Command) ? {
 			utils.remove_symlink(utils.nvenv_current)
 			utils.remove_symlink(utils.nvim_current)
 
-			utils.log_msg('Version $version was in use and was forcibly uninstalled, you must set a new version with `nvenv use <version>`.')
+			utils.warn_msg('Version $version was in use and was forcibly uninstalled, you must set a new version with `nvenv use <version>`.')
 		} else {
 			utils.log_msg('Version $version was forcibly uninstalled.')
 		}
@@ -235,9 +242,7 @@ fn uninstall(cmd Command) ? {
 
 	if clean {
 		cache_file, _ := utils.download_path(version)
-		os.rm(cache_file) or {
-			utils.error_msg('Cache files for version $version were not found.', 2)
-		}
+		os.rm(cache_file) or { utils.warn_msg('Cache files for version $version were not found.') }
 
 		utils.log_msg('Cache files for version $version were successfully cleaned.')
 	}
@@ -246,6 +251,9 @@ fn uninstall(cmd Command) ? {
 fn update(cmd Command) ? {
 	version := cmd.args[0]
 	utils.check_version(version, 'update')
+
+	// Warn about deprecation
+	utils.warn_msg('`nvenv update <version>` will be deprecated soon.\n\tPlease use `nvenv update-nightly` instead.')
 
 	if !os.exists(utils.version_path(version)) {
 		utils.error_msg('Version $version is not installed, run `nvenv install $version`.',
@@ -272,7 +280,45 @@ fn update(cmd Command) ? {
 		tar_name += 'osx64'
 	}
 
-	os.rmdir('$utils.nvenv_versions/$tar_name') or { }
+	os.rmdir('$utils.nvenv_versions/$tar_name') or {}
+
+	tar_path := '$utils.nvenv_cache/$filename'
+	utils.log_msg('Updating version $version ...')
+	// Extract the tarball, move all its content to the existing version directory and then delete the new version dir
+	if os.system('cd $utils.nvenv_cache && tar -xf $tar_path && cp -arf $tar_name/* $target_version && rm -r $tar_name') != 0 {
+		utils.error_msg('Failed to update Nvim.', 3)
+	}
+
+	utils.log_msg('Version $version successfully updated.')
+}
+
+fn update_nightly(cmd Command) ? {
+	version := 'nightly'
+	if !os.exists(utils.version_path(version)) {
+		utils.error_msg('Version $version is not installed.', 2)
+	}
+
+	// /home/user/.local/share/nvenv/versions/nightly
+	target_version := utils.version_path(version)
+	// /home/user/.cache/nvenv/nightly.tar.gz, nightly.tar.gz
+	dl_path, filename := utils.download_path(version)
+
+	// Delete the old cache file
+	dl_url := utils.download_url(version)
+	utils.log_msg('Downloading version $version update ...')
+
+	if os.system('curl --progress-bar -Lo $dl_path $dl_url') != 0 {
+		utils.error_msg('Failed to download version $version update ($dl_url)', 2)
+	}
+
+	mut tar_name := 'nvim-'
+	$if linux && x64 {
+		tar_name += 'linux64'
+	} $else $if macos {
+		tar_name += 'osx64'
+	}
+
+	os.rmdir('$utils.nvenv_versions/$tar_name') or {}
 
 	tar_path := '$utils.nvenv_cache/$filename'
 	utils.log_msg('Updating version $version ...')
@@ -326,13 +372,13 @@ fn use(cmd Command) ? {
 
 fn clean(cmd Command) ? {
 	if os.is_dir_empty(utils.nvenv_cache) {
-		utils.error_msg("You don't have any version installed.", 2)
+		utils.error_msg("You don't have any version downloaded.", 2)
 	}
 
 	utils.log_msg('Cleaning cache files ...')
 
 	for cache_file in utils.get_files(utils.nvenv_cache) {
-		os.rm(cache_file) or { }
+		os.rm(cache_file) or {}
 	}
 
 	utils.log_msg('Cleaned all cache files successfully.')

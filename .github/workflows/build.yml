@@ -4,10 +4,12 @@ on:
   push:
     paths-ignore:
       - "**.md"
+      - ".gitignore"
       - "Makefile"
   pull_request:
     paths-ignore:
       - "**.md"
+      - ".gitignore"
       - "Makefile"
 
 jobs:
@@ -28,11 +30,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: nvenv
-
-      - name: Format
-        run: |
-          cd ./nvenv
-          make fmt
 
       - name: Build Nvenv
         run: |
@@ -62,11 +59,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: nvenv
- 
-      - name: Format
-        run: |
-          cd ./nvenv
-          make fmt
 
       - name: Build Nvenv 
         run: |

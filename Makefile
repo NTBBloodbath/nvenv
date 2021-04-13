@@ -19,11 +19,11 @@ help: ## Shows this message
 	@egrep '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "    \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 
-linux: ## Build Nvenv for production (Linux)
+linux: fmt ## Build Nvenv for production (Linux)
 	$(VC) -prod -os linux -m64 -o ./bin/nvenv_linux nvenv.v
 
 
-macos: ## Build Nvenv for production (MacOS)
+macos: fmt ## Build Nvenv for production (MacOS)
 	$(VC) -prod -os macos -m64 -o ./bin/nvenv_osx nvenv.v
 
 
