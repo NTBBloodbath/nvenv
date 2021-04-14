@@ -3,6 +3,7 @@ import utils
 import v.vmod
 import cli { Command, Flag }
 
+
 fn main() {
 	vm := vmod.decode(@VMOD_FILE) or { panic(err.msg) }
 
