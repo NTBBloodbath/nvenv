@@ -27,7 +27,7 @@ version manager, made using [Vlang](https://github.com/vlang/v).
 >
 > 1. Linux
 >
-> 2. MacOS
+> 2. MacOS (Untested, if you found issues please report them!)
 
 Just download the latest binary from [releases](https://github.com/NTBBloodbath/nvenv/releases)
 and add it to your `$PATH`.
@@ -46,17 +46,17 @@ or <kbd>nvenv help [command]</kbd> for help with a specific command.
 ❯ nvenv help
 Usage: nvenv [commands]
 
-Neovim Version Manager
+A lightweight and blazing fast Neovim version manager
 
 Commands:
-  setup               Setup Nvenv, required at first usage.
-  ls                  List your installed Neovim versions.
-  list-remote         List the available Neovim versions.
-  install             Install a specific version of Neovim.
-  uninstall           Uninstall a specific version of Neovim.
-  update              Update a specific version of Neovim.
-  use                 Use a specific version of Neovim.
-  clean               Clean Nvenv's cache files
+  setup               Set up required files and directories, required at first usage.
+  ls                  List your installed versions.
+  list-remote         List the available versions.
+  install             Install a version.
+  uninstall           Uninstall a version.
+  update-nightly      Update Neovim Nightly version.
+  use                 Use a specific version.
+  clean               Clean Nvenv cache files.
   help                Prints help information.
   version             Prints version information.
 ```
