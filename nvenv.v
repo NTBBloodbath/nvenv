@@ -72,15 +72,6 @@ fn main() {
 		description: 'Uninstall and clean the cache files of the version.'
 	})
 
-	mut update_cmd := Command{
-		name: 'update'
-		description: 'Update a version.'
-		usage: '<version>'
-		required_args: 1
-		pre_execute: utils.setup_exists
-		execute: update
-	}
-
 	mut update_nightly_cmd := Command{
 		name: 'update-nightly'
 		description: 'Update Neovim Nightly version.'
@@ -104,7 +95,7 @@ fn main() {
 		execute: clean
 	}
 
-	cmd.add_commands([setup_cmd, list_cmd, list_remote_cmd, install_cmd, uninstall_cmd, update_cmd,
+	cmd.add_commands([setup_cmd, list_cmd, list_remote_cmd, install_cmd, uninstall_cmd,
 		update_nightly_cmd, use_cmd, clean_cmd])
 	cmd.setup()
 	cmd.parse(os.args)
@@ -246,50 +237,6 @@ fn uninstall(cmd Command) ? {
 
 		utils.log_msg('Cache files for version $version were successfully cleaned.')
 	}
-}
-
-fn update(cmd Command) ? {
-	version := cmd.args[0]
-	utils.check_version(version, 'update')
-
-	// Warn about deprecation
-	utils.warn_msg('`nvenv update <version>` will be deprecated soon.\n\tPlease use `nvenv update-nightly` instead.')
-
-	if !os.exists(utils.version_path(version)) {
-		utils.error_msg('Version $version is not installed, run `nvenv install $version`.',
-			2)
-	}
-
-	// /home/user/.local/share/nvenv/versions/version
-	target_version := utils.version_path(version)
-	// /home/user/.cache/nvenv/version.tar.gz, version.tar.gz
-	dl_path, filename := utils.download_path(version)
-
-	// Delete the old cache file
-	dl_url := utils.download_url(version)
-	utils.log_msg('Downloading version $version update ...')
-
-	if os.system('curl --progress-bar -Lo $dl_path $dl_url') != 0 {
-		utils.error_msg('Failed to download version $version update ($dl_url)', 2)
-	}
-
-	mut tar_name := 'nvim-'
-	$if linux && x64 {
-		tar_name += 'linux64'
-	} $else $if macos {
-		tar_name += 'osx64'
-	}
-
-	os.rmdir('$utils.nvenv_versions/$tar_name') or {}
-
-	tar_path := '$utils.nvenv_cache/$filename'
-	utils.log_msg('Updating version $version ...')
-	// Extract the tarball, move all its content to the existing version directory and then delete the new version dir
-	if os.system('cd $utils.nvenv_cache && tar -xf $tar_path && cp -arf $tar_name/* $target_version && rm -r $tar_name') != 0 {
-		utils.error_msg('Failed to update Nvim.', 3)
-	}
-
-	utils.log_msg('Version $version successfully updated.')
 }
 
 fn update_nightly(cmd Command) ? {
