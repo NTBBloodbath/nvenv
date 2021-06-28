@@ -68,7 +68,7 @@ pub fn check_current() string {
 		return ''
 	}
 
-	return base(full_path).trim('\n')
+	return os.base(full_path).trim('\n')
 }
 
 // Check if the given version is empty
