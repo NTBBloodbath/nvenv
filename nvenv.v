@@ -210,7 +210,7 @@ fn uninstall(cmd Command) ? {
 	}
 
 	if !force && version == current_version {
-		utils.error_msg("Version $version cannot be uninstalled because it\'s in use, maybe you want to use `--force`?",
+		utils.error_msg('Version $version cannot be uninstalled because it\'s in use, maybe you want to use `--force`?',
 			1)
 	}
 
