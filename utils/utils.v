@@ -89,8 +89,12 @@ pub fn check_command(command string) {
 // Pretty print the local versions
 pub fn print_versions(versions []string, remote bool) {
 	current_version := check_current()
+	mut nvim_versions := versions.clone()
 
-	for version in versions {
+	// by default the sort function sorts from 0-9 to a-z so we need to reverse
+	// the order. In that way, stable and nightly will appear first.
+	nvim_versions.sort()
+	for version in nvim_versions.reverse() {
 		// If listing remote versions, current version exists and version is equal to it
 		if remote && (current_version != '' && version == current_version) {
 			println('$version\t(installed, used)')

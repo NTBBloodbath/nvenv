@@ -29,9 +29,6 @@ version manager, made using [Vlang](https://github.com/vlang/v).
 >
 > 2. MacOS (Untested, if you found issues please report them!)
 
-Just download the latest binary from [releases](https://github.com/NTBBloodbath/nvenv/releases)
-and add it to your `$PATH`.
-
 ## Dependencies
 
 - jq
