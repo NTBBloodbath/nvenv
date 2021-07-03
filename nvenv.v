@@ -129,7 +129,9 @@ fn list_remote_pre(_ Command) ? {
 fn list_remote(cmd Command) ? {
 	versions_to_show := cmd.flags.get_int('versions') ?
 	releases := 'https://api.github.com/repos/neovim/neovim/releases'
-	jq_cmd := 'jq \'[.[] | select(.tag_name!="v0.4.4") | .tag_name] | .[:$versions_to_show] | .[]\''
+	// Filter the releases JSON array and exclude v0.5.0 because stable is an alias
+	// for this version
+	jq_cmd := 'jq \'[.[] | select(.tag_name!="v0.5.0") | .tag_name] | .[:$versions_to_show] | .[]\''
 
 	remote_versions := os.execute('curl -s $releases | $jq_cmd').output
 	if remote_versions.len == 0 {

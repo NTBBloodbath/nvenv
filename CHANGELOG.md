@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2021-07-03
+### Changed
+- Now `0.5.0` is the stable target and nvenv matches with actual neovim releases.
+
 ## [1.3.0] - 2021-04-14
 ### Removed
 - `update` command, use `update-nightly` instead
