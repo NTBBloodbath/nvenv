@@ -1,6 +1,6 @@
 name: build
 
-on: 
+on:
   push:
     paths-ignore:
       - "**.md"
@@ -60,7 +60,7 @@ jobs:
         with:
           path: nvenv
 
-      - name: Build Nvenv 
+      - name: Build Nvenv
         run: |
           cd ./nvenv
           make macos
@@ -73,14 +73,14 @@ jobs:
 
   release:
     name: Release to Github
-    if: contains(github.event.head_commit.message, '[Release]') && github.repository == 'NTBBloodbath/nvenv'
+    if: contains(github.event.head_commit.message, 'release:') && github.repository == 'NTBBloodbath/nvenv'
     needs: [linux, macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           repository: ${{ github.repository }}
-          path: 'workspace'
+          path: "workspace"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/download-artifact@v2
