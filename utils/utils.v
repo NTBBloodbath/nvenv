@@ -168,9 +168,9 @@ pub fn download_url(version string) string {
 	}
 
 	$if linux && x64 {
-		dl_version = nvim_releases + '/${dl_version}/nvim-linux64.tar.gz'
+		dl_version = nvim_releases + '/${dl_version}/nvim-linux-x86_64.tar.gz'
 	} $else $if macos {
-		dl_version = nvim_releases + '/${dl_version}/nvim-macos.tar.gz'
+		dl_version = nvim_releases + '/${dl_version}/nvim-macos-x86_64.tar.gz'
 	}
 
 	return dl_version
