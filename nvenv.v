@@ -101,7 +101,7 @@ fn main() {
 	cmd.parse(os.args)
 }
 
-fn setup(cmd Command) ? {
+fn setup(cmd Command) ! {
 	dependencies := ['curl', 'tar', 'jq']
 
 	if !os.exists(utils.nvenv_home) {
@@ -109,9 +109,9 @@ fn setup(cmd Command) ? {
 		// /home/user/.cache/nvenv => cache files for nvenv
 		// /home/user/.local/bin => where nvim will be symlinked
 		// /home/user/.local/share/nvenv => core files for nvenv
-		os.mkdir_all(utils.nvenv_cache)?
-		os.mkdir_all('${os.home_dir()}/.local/bin')?
-		os.mkdir_all(utils.nvenv_versions)?
+		os.mkdir_all(utils.nvenv_cache)!
+		os.mkdir_all('${os.home_dir()}/.local/bin')!
+		os.mkdir_all(utils.nvenv_versions)!
 		// Check for missing dependencies
 		for dependency in dependencies {
 			utils.check_command(dependency)
@@ -121,12 +121,12 @@ fn setup(cmd Command) ? {
 	}
 }
 
-fn list_remote_pre(_ Command) ? {
+fn list_remote_pre(_ Command) ! {
 	utils.log_msg('Fetching remote versions ...\n')
 }
 
-fn list_remote(cmd Command) ? {
-	versions_to_show := cmd.flags.get_int('versions')?
+fn list_remote(cmd Command) ! {
+	versions_to_show := cmd.flags.get_int('versions')!
 	releases := 'https://api.github.com/repos/neovim/neovim/releases'
 	// Filter the releases JSON array and exclude v0.5.0 because stable is an alias
 	// for this version
@@ -143,7 +143,7 @@ fn list_remote(cmd Command) ? {
 	utils.print_versions(remote_versions_list, true)
 }
 
-fn list(cmd Command) ? {
+fn list(cmd Command) ! {
 	versions := utils.nvenv_versions
 	mut installed_versions := utils.get_subdirs(versions)
 
@@ -155,7 +155,7 @@ fn list(cmd Command) ? {
 	utils.print_versions(installed_versions.reverse(), false)
 }
 
-fn install(cmd Command) ? {
+fn install(cmd Command) ! {
 	version := cmd.args[0]
 	utils.check_version(version, 'install')
 
@@ -193,17 +193,17 @@ fn install(cmd Command) ? {
 
 	// If there is no current used version then use the new downloaded version as current
 	if !os.exists(utils.nvenv_current) {
-		use(cmd)?
+		use(cmd)!
 		utils.log_msg('Version ${version} successfully installed.\n\tYou may need to add ${os.home_dir()}/.local/bin to your \$PATH.')
 	} else {
 		utils.log_msg('Version ${version} successfully installed.\n\tYou can now use it by doing `nvenv use ${version}`.')
 	}
 }
 
-fn uninstall(cmd Command) ? {
+fn uninstall(cmd Command) ! {
 	version := cmd.args[0]
-	force := cmd.flags.get_bool('force')?
-	clean := cmd.flags.get_bool('clean')?
+	force := cmd.flags.get_bool('force')!
+	clean := cmd.flags.get_bool('clean')!
 	current_version := utils.check_current()
 	utils.check_version(version, 'uninstall')
 
@@ -243,7 +243,7 @@ fn uninstall(cmd Command) ? {
 	}
 }
 
-fn update_nightly(cmd Command) ? {
+fn update_nightly(cmd Command) ! {
 	version := 'nightly'
 	if !os.exists(utils.version_path(version)) {
 		utils.error_msg('Version ${version} is not installed.', 2)
@@ -281,7 +281,7 @@ fn update_nightly(cmd Command) ? {
 	utils.log_msg('Version ${version} successfully updated.')
 }
 
-fn use(cmd Command) ? {
+fn use(cmd Command) ! {
 	version := cmd.args[0]
 	current_version := utils.check_current()
 	utils.check_version(version, 'use')
@@ -321,7 +321,7 @@ fn use(cmd Command) ? {
 	utils.log_msg('Using version ${version}')
 }
 
-fn clean(cmd Command) ? {
+fn clean(cmd Command) ! {
 	if os.is_dir_empty(utils.nvenv_cache) {
 		utils.error_msg("You don't have any version downloaded.", 2)
 	}
