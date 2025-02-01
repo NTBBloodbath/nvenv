@@ -178,9 +178,9 @@ fn install(cmd Command) ! {
 
 	mut tar_name := 'nvim-'
 	$if linux && x64 {
-		tar_name += 'linux64'
+		tar_name += 'linux-x86_64'
 	} $else $if macos {
-		tar_name += 'osx64'
+		tar_name += 'macos-x86_64'
 	}
 
 	os.rmdir('${utils.nvenv_versions}/${tar_name}') or {}
@@ -264,9 +264,9 @@ fn update_nightly(cmd Command) ! {
 
 	mut tar_name := 'nvim-'
 	$if linux && x64 {
-		tar_name += 'linux64'
+		tar_name += 'linux-x86_64'
 	} $else $if macos {
-		tar_name += 'osx64'
+		tar_name += 'macos-x86_64'
 	}
 
 	os.rmdir('${utils.nvenv_versions}/${tar_name}') or {}
