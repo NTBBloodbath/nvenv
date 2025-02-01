@@ -47,7 +47,7 @@ pub fn error_msg(message string, exit_code int) {
 }
 
 // Check if the nvenv directories exists
-pub fn setup_exists(_ Command) ? {
+pub fn setup_exists(_ Command) ! {
 	if !os.exists(nvenv_home) {
 		error_msg('You must need to setup nvenv first, run `nvenv setup`.', 1)
 	}
