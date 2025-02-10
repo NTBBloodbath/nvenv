@@ -112,7 +112,7 @@ v -prod nvenv.v
 
 1. Fork it (https://github.com/NTBBloodbath/nvenv/fork)
 2. Create your feature branch (<kbd>git checkout -b my-new-feature</kbd>)
-3. Commit your changes (<kbd>git commit -am 'Add some feature'</kbd>)
+3. Commit your changes (<kbd>git commit -m 'Add some feature'</kbd>)
 4. Push to the branch (<kbd>git push origin my-new-feature</kbd>)
 5. Create a new Pull Request
 
